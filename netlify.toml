@@ -7,8 +7,3 @@
   from = "/app/"
   to = "/app.html"
   status = 200
-
-[[redirects]]
-  from = "/.netlify/functions/ask"
-  to = "/.netlify/functions/ask"
-  status = 200
