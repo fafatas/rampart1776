@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rampart</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Georgia, 'Times New Roman', serif; background: #FFFFFF; color: #0A1628; min-height: 100vh; }
+  .sans { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+
+  /* NAV */
+  nav { background: #0A1628; padding: 0 1.5rem; display: flex; align-items: center; justify-content: space-between; height: 56px; }
+  .nav-logo { color: #FFFFFF; font-size: 20px; letter-spacing: 0.04em; font-weight: normal; }
+  .nav-logo span { color: #C8102E; }
+  .nav-links { display: flex; gap: 1.5rem; }
+  .nav-links a { color: #6A82A8; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 13px; text-decoration: none; cursor: pointer; letter-spacing: 0.04em; text-transform: uppercase; }
+  .nav-links a:hover, .nav-links a.active { color: #FFFFFF; }
+  .nav-right { display: flex; gap: 10px; align-items: center; }
+  .btn-outline { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 12px; padding: 6px 14px; border: 1px solid #6A82A8; background: transparent; color: #6A82A8; cursor: pointer; letter-spacing: 0.05em; text-transform: uppercase; border-radius: 2px; }
+  .btn-outline:hover { border-color: #FFFFFF; color: #FFFFFF; }
+  .btn-gold { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 12px; padding: 6px 14px; border: 1px solid #C8102E; background: #C8102E; color: #FFFFFF; cursor: pointer; letter-spacing: 0.05em; text-transform: uppercase; border-radius: 2px; font-weight: 600; }
+
+  /* PAGES */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* HOME / DAILY */
+  .hero-bar { background: #0A1628; color: #6A82A8; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 12px; text-align: center; padding: 8px; letter-spacing: 0.06em; text-transform: uppercase; border-bottom: 2px solid #C8102E; }
+  .hero-bar span { color: #F4A0A8; }
+  .daily-layout { max-width: 720px; margin: 0 auto; padding: 2.5rem 1.5rem; }
+  .series-pill { display: inline-block; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; background: #EEF1F7; color: #4A5568; padding: 4px 12px; border-radius: 2px; margin-bottom: 1.25rem; }
+  .daily-principle { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 12px; color: #C8102E; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .daily-hook { font-size: 26px; line-height: 1.35; color: #0A1628; margin-bottom: 1.75rem; font-weight: normal; }
+  .quote-wrap { border-left: 3px solid #B8860B; padding: 0.25rem 0 0.25rem 1.25rem; margin: 1.75rem 0; }
+  .quote-text { font-size: 18px; line-height: 1.7; color: #0A1628; font-style: italic; }
+  .quote-attr { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 12px; color: #718096; margin-top: 0.6rem; letter-spacing: 0.04em; }
+  .section-head { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 11px; color: #718096; letter-spacing: 0.1em; text-transform: uppercase; margin: 1.75rem 0 0.5rem; }
+  .body-text { font-size: 16px; line-height: 1.75; color: #0A1628; }
+  .relevance-text { font-size: 16px; line-height: 1.75; color: #1B3A6B; }
+  .action-row { display: flex; gap: 10px; margin-top: 2rem; flex-wrap: wrap; align-items: center; }
+  .btn-primary { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 13px; padding: 10px 20px; background: #0A1628; color: #FFFFFF; border: none; cursor: pointer; border-radius: 2px; letter-spacing: 0.04em; }
+  .btn-primary:hover { background: #162340; }
+  .btn-secondary { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 13px; padding: 10px 20px; background: transparent; color: #0A1628; border: 1px solid #CBD5E0; cursor: pointer; border-radius: 2px; letter-spacing: 0.04em; }
+  .btn-secondary:hover { border-color: #0A1628; }
+  .btn-x { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 13px; padding: 10px 20px; background: transparent; color: #0A1628; border: 1px solid #CBD5E0; cursor: pointer; border-radius: 2px; display: flex; align-items: center; gap: 6px; }
+  .streak-bar { background: #FFFFFF; border: 1px solid #EEF1F7; border-radius: 4px; padding: 0.75rem 1rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 12px; }
+  .streak-num { font-size: 22px; font-weight: 600; color: #0A1628; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+  .streak-label { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 13px; color: #4A5568; }
+  .divider { border: none; border-top: 1px solid #EEF1F7; margin: 2rem 0; }
+
+  /* DIG DEEPER */
+  .deeper-panel { background: #FFFFFF; border: 1px solid #EEF1F7; border-radius: 4px; margin-top: 2rem; overflow: hidden; }
+  .deeper-header-static { background: #EEF1F7; border-bottom: 1px solid #CBD5E0; padding: 0.75rem 1.25rem; display: flex; justify-content: space-between; align-items: center; }
+  .deeper-title { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 13px; font-weight: 600; color: #0A1628; letter-spacing: 0.04em; text-transform: uppercase; }
+  .deeper-body-open { padding: 0.5rem 1.25rem; }
+  .deeper-item { display: flex; gap: 12px; padding: 0.75rem 0; border-bottom: 1px solid #F0F3F8; cursor: pointer; align-items: center; }
+  .deeper-item:last-child { border-bottom: none; }
+  .deeper-item:hover .deeper-item-title { color: #C8102E; }
+  .deeper-icon { width: 32px; height: 32px; background: #FFFFFF; border-radius: 2px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 14px; font-family: Georgia, serif; }
+  .deeper-item-title { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 14px; color: #0A1628; margin-bottom: 2px; }
+  .deeper-item-desc { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 12px; color: #718096; }
+  .deeper-arrow-right { margin-left: auto; color: #CBD5E0; font-size: 16px; flex-shrink: 0; }
+  .deep-detail-wrap { max-width: 720px; margin: 0 auto; padding: 2.5rem 1.5rem; }
+  .deep-tag { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 11px; color: #C8102E; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem; }
+  .deep-title { font-size: 28px; font-weight: normal; line-height: 1.3; margin-bottom: 0.5rem; color: #0A1628; }
+  .deep-subtitle { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 14px; color: #718096; margin-bottom: 2rem; }
+
+  /* QUIZ */
+  .quiz-wrap { max-width: 600px; margin: 0 auto; padding: 2.5rem 1.5rem; }
+  .quiz-progress { height: 4px; background: #EEF1F7; border-radius: 2px; margin-bottom: 2rem; }
+  .quiz-progress-fill { height: 100%; background: #C8102E; border-radius: 2px; transition: width 0.4s; }
+  .quiz-q-num { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 12px; color: #718096; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.75rem; }
+  .quiz-question { font-size: 20px; line-height: 1.5; margin-bottom: 2rem; }
+  .quiz-option { width: 100%; text-align: left; padding: 0.9rem 1.1rem; margin-bottom: 0.6rem; background: #FFFFFF; border: 1px solid #EEF1F7; border-radius: 4px; cursor: pointer; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 15px; color: #0A1628; transition: border-color 0.15s; }
+  .quiz-option:hover { border-color: #0A1628; }
+  .quiz-option.correct { background: #eaf3de; border-color: #639922; color: #27500a; }
+  .quiz-option.wrong { background: #fcebeb; border-color: #a32d2d; color: #501313; }
+  .quiz-option.reveal { background: #eaf3de; border-color: #639922; color: #27500a; }
+  .quiz-explanation { background: #FFFFFF; border-left: 3px solid #B8860B; padding: 1rem 1.25rem; margin-top: 1rem; font-size: 14px; line-height: 1.7; color: #0A1628; display: none; border-radius: 0 4px 4px 0; }
+  .quiz-explanation.show { display: block; }
+  .quiz-next { margin-top: 1.25rem; display: none; }
+  .quiz-next.show { display: block; }
+  .quiz-score { text-align: center; padding: 3rem 1rem; }
+  .score-num { font-size: 64px; font-weight: normal; color: #0A1628; line-height: 1; margin-bottom: 0.5rem; }
+  .score-label { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 14px; color: #718096; margin-bottom: 2rem; }
+
+  /* EXPLORE */
+  .explore-wrap { max-width: 900px; margin: 0 auto; padding: 2.5rem 1.5rem; }
+  .explore-search { width: 100%; padding: 0.8rem 1rem; font-size: 16px; border: 1px solid #CBD5E0; border-radius: 4px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; margin-bottom: 1.5rem; background: #FFFFFF; color: #0A1628; }
+  .explore-search:focus { outline: none; border-color: #0A1628; }
+  .filter-row { display: flex; gap: 8px; margin-bottom: 2rem; flex-wrap: wrap; }
+  .filter-btn { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 12px; padding: 5px 14px; border: 1px solid #CBD5E0; background: transparent; color: #4A5568; cursor: pointer; border-radius: 20px; letter-spacing: 0.03em; }
+  .filter-btn:hover, .filter-btn.active { background: #0A1628; color: #FFFFFF; border-color: #0A1628; }
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; }
+  .explore-card { background: #FFFFFF; border: 1px solid #EEF1F7; border-radius: 4px; padding: 1.25rem; cursor: pointer; transition: border-color 0.15s; }
+  .explore-card:hover { border-color: #0A1628; }
+  .card-tag { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 11px; color: #C8102E; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .card-title { font-size: 16px; line-height: 1.4; margin-bottom: 0.5rem; color: #0A1628; }
+  .card-snippet { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 13px; color: #718096; line-height: 1.5; }
+
+  /* FOUNDERS */
+  .founders-wrap { max-width: 900px; margin: 0 auto; padding: 2.5rem 1.5rem; }
+  .founder-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+  .founder-card { background: #FFFFFF; border: 1px solid #EEF1F7; border-radius: 4px; padding: 1.25rem; cursor: pointer; text-align: center; transition: border-color 0.15s; }
+  .founder-card:hover { border-color: #0A1628; }
+  .founder-initial { width: 52px; height: 52px; background: #0A1628; color: #C8102E; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; margin: 0 auto 0.75rem; }
+  .founder-name { font-size: 16px; margin-bottom: 4px; color: #0A1628; }
+  .founder-role { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 12px; color: #718096; }
+
+  /* SECTION TITLE */
+  .section-title { font-size: 28px; font-weight: normal; margin-bottom: 0.5rem; color: #0A1628; }
+  .section-subtitle { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 14px; color: #718096; margin-bottom: 2rem; }
+
+  /* DETAIL VIEW */
+  .detail-back { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 13px; color: #718096; cursor: pointer; margin-bottom: 1.5rem; display: inline-flex; align-items: center; gap: 6px; }
+  .detail-back:hover { color: #0A1628; }
+
+  .ask-wrap { max-width: 760px; margin: 0 auto; padding: 2.5rem 1.5rem; }
+  .ask-title { font-size: 28px; font-weight: normal; color: #0A1628; margin-bottom: 0.5rem; }
+  .ask-subtitle { font-size: 14px; color: #718096; line-height: 1.6; margin-bottom: 2rem; }
+  .ask-suggest-label { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 11px; color: #718096; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.6rem; }
+  .ask-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 1.5rem; }
+  .ask-chip { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 12px; padding: 6px 14px; border: 1px solid #CBD5E0; background: #FFFFFF; color: #4A5568; cursor: pointer; border-radius: 20px; }
+  .ask-chip:hover { background: #0A1628; color: #FFFFFF; border-color: #0A1628; }
+  .ask-input-row { display: flex; gap: 10px; margin-bottom: 1.5rem; }
+  .ask-input { flex: 1; padding: 0.85rem 1rem; font-size: 15px; border: 1px solid #CBD5E0; border-radius: 4px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: #0A1628; background: #FFFFFF; }
+  .ask-input:focus { outline: none; border-color: #0A1628; }
+  .ask-submit { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 13px; padding: 0.85rem 1.5rem; background: #0A1628; color: #FFFFFF; border: none; border-radius: 4px; cursor: pointer; letter-spacing: 0.04em; }
+  .ask-submit:hover { background: #162340; }
+  .ask-submit:disabled { background: #CBD5E0; cursor: not-allowed; }
+  .ask-response { background: #FFFFFF; border: 1px solid #EEF1F7; border-radius: 4px; padding: 1.5rem; margin-bottom: 1rem; }
+  .ask-q-label { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 11px; color: #C8102E; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .ask-q-text { font-size: 17px; color: #0A1628; margin-bottom: 1.25rem; line-height: 1.4; }
+  .ask-answer { font-size: 15px; line-height: 1.8; color: #0A1628; }
+  .ask-answer p { margin-bottom: 0.9rem; }
+  .ask-answer p:last-child { margin-bottom: 0; }
+  .ask-sources { margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid #EEF1F7; }
+  .ask-sources-label { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 11px; color: #718096; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .ask-source-tag { display: inline-block; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 12px; background: #EEF1F7; color: #4A5568; padding: 3px 10px; border-radius: 2px; margin: 2px 4px 2px 0; }
+  .ask-loading { display: flex; align-items: center; gap: 10px; padding: 1.25rem 1.5rem; background: #FFFFFF; border: 1px solid #EEF1F7; border-radius: 4px; margin-bottom: 1rem; }
+  .ask-dot { width: 7px; height: 7px; background: #CBD5E0; border-radius: 50%; animation: askpulse 1.2s ease-in-out infinite; }
+  .ask-dot:nth-child(2) { animation-delay: 0.2s; }
+  .ask-dot:nth-child(3) { animation-delay: 0.4s; }
+  .ask-loading-text { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 13px; color: #718096; }
+  @keyframes askpulse { 0%,80%,100%{opacity:0.3} 40%{opacity:1} }
+  .ask-error { background: #fff5f5; border: 1px solid #fed7d7; border-radius: 4px; padding: 1rem 1.25rem; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 14px; color: #c53030; margin-bottom: 1rem; }
+
+  @media (max-width: 600px) {
+    .nav-links { display: none; }
+    .daily-hook { font-size: 20px; }
+    .quote-text { font-size: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo sans">Rampart <span style="font-size:14px; letter-spacing:0.12em;">1776</span></div>
+  <div class="nav-links">
+    <a onclick="showPage('daily')" id="nav-daily" class="active">Today</a>
+    <a onclick="showPage('explore')" id="nav-explore">Explore</a>
+    <a onclick="showPage('founders')" id="nav-founders">Founders</a>
+    <a onclick="showPage('quiz')" id="nav-quiz">Quiz</a>
+    <a onclick="showPage('ask')" id="nav-ask">Ask</a>
+  </div>
+  <div class="nav-right">
+    <button class="btn-outline" onclick="showPage('ask')">Ask the Founders</button>
+    <button class="btn-gold">Join Free</button>
+  </div>
+</nav>
+
+<!-- DAILY PAGE -->
+<div class="page active" id="page-daily">
+  <div class="hero-bar sans">Pick up where the tavern left off &nbsp;·&nbsp; <span>September 17 — Constitution Day · Special Series This Week</span></div>
+  <div class="daily-layout">
+    <div class="streak-bar sans">
+      <div class="streak-num">7</div>
+      <div class="streak-label">day streak — keep it going</div>
+    </div>
+    <div class="series-pill sans">The Documents &nbsp;·&nbsp; Week 3</div>
+    <div class="daily-principle sans">Today's principle: Separation of powers</div>
+    <div class="daily-hook">The founders didn't just distrust kings. They distrusted every concentration of power — including the one they were creating.</div>
+    <div class="quote-wrap">
+      <div class="quote-text">"Ambition must be made to counteract ambition... If men were angels, no government would be necessary. If angels were to govern men, neither external nor internal controls on government would be necessary."</div>
+      <div class="quote-attr sans">— James Madison, Federalist No. 51, 1788</div>
+    </div>
+    <div class="section-head sans">Historical context</div>
+    <div class="body-text">Madison was making the case for the Constitution's three-branch design. He had studied every republic in history and concluded they all failed the same way — power collected, then corrupted. His solution was structural: pit the branches against each other so that no single faction could dominate. This wasn't cynicism — it was realism about human nature built into law.</div>
+    <div class="section-head sans">Why it matters today</div>
+    <div class="relevance-text">When any branch overreaches — executive orders, legislative abdication, judicial activism — Madison's warning is the correct framework for the debate.</div>
+    <div class="action-row">
+      <button class="btn-secondary" onclick="showPage('quiz')">Test yourself</button>
+      <button class="btn-x sans" onclick="shareX()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        Share on X
+      </button>
+    </div>
+
+    <div class="deeper-panel" id="deeper-panel">
+      <div class="deeper-header-static sans">
+        <span class="deeper-title sans">Dig deeper</span>
+        <span style="font-size:12px; color:#718096; font-family:-apple-system,sans-serif;">Federalist No. 51 &amp; separation of powers</span>
+      </div>
+      <div class="deeper-body-open">
+        <div class="deeper-item" onclick="showDeepDetail('madison-profile')">
+          <div class="deeper-icon">M</div>
+          <div>
+            <div class="deeper-item-title sans">James Madison — Father of the Constitution</div>
+            <div class="deeper-item-desc sans">His life, beliefs, contradictions, and why Federalist 51 is his masterwork</div>
+          </div>
+          <div class="deeper-arrow-right">→</div>
+        </div>
+        <div class="deeper-item" onclick="showDeepDetail('federalist-51')">
+          <div class="deeper-icon" style="font-size:12px; font-family:Georgia,serif; color:#C8102E; font-weight:bold;">51</div>
+          <div>
+            <div class="deeper-item-title sans">Full text: Federalist No. 51</div>
+            <div class="deeper-item-desc sans">Read Madison's complete argument for checks and balances</div>
+          </div>
+          <div class="deeper-arrow-right">→</div>
+        </div>
+        <div class="deeper-item" onclick="showDeepDetail('montesquieu')">
+          <div class="deeper-icon" style="font-size:13px; color:#4A5568;">M</div>
+          <div>
+            <div class="deeper-item-title sans">Montesquieu's influence on Madison</div>
+            <div class="deeper-item-desc sans">The French philosopher whose ideas shaped the three-branch design</div>
+          </div>
+          <div class="deeper-arrow-right">→</div>
+        </div>
+        <div class="deeper-item" onclick="showDeepDetail('crown-abuses')">
+          <div class="deeper-icon" style="font-size:13px; color:#4A5568;">⚖</div>
+          <div>
+            <div class="deeper-item-title sans">The abuses this system was designed to prevent</div>
+            <div class="deeper-item-desc sans">What the founders had witnessed firsthand under the Crown</div>
+          </div>
+          <div class="deeper-arrow-right">→</div>
+        </div>
+        <div class="deeper-item" onclick="showDeepDetail('anti-federalist')">
+          <div class="deeper-icon" style="font-size:12px; color:#4A5568; font-family:Georgia,serif;">AF</div>
+          <div>
+            <div class="deeper-item-title sans">Anti-Federalist Papers — the other side</div>
+            <div class="deeper-item-desc sans">What the Constitution's opponents feared, and whether they were right</div>
+          </div>
+          <div class="deeper-arrow-right">→</div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <div class="sans" style="font-size:13px; color:#718096;">Tomorrow: The Bill of Rights — why it almost wasn't included</div>
+      <button class="btn-secondary sans" style="font-size:12px; padding:6px 14px;">Get reminder</button>
+    </div>
+  </div>
+</div>
+
+<!-- EXPLORE PAGE -->
+<div class="page" id="page-explore">
+  <div class="explore-wrap">
+    <div class="section-title">Explore</div>
+    <div class="section-subtitle sans">The tavern is open. Search the founding record — documents, principles, debates, and history in the founders' own words.</div>
+    <input class="explore-search" placeholder="Search — e.g. 'free speech', 'taxation', 'Hamilton'..." oninput="filterCards(this.value)">
+    <div class="filter-row">
+      <button class="filter-btn active" onclick="setFilter('all', this)">All</button>
+      <button class="filter-btn" onclick="setFilter('document', this)">Documents</button>
+      <button class="filter-btn" onclick="setFilter('principle', this)">Principles</button>
+      <button class="filter-btn" onclick="setFilter('founder', this)">Founders</button>
+      <button class="filter-btn" onclick="setFilter('debate', this)">Debates</button>
+      <button class="filter-btn" onclick="setFilter('then-now', this)">Then &amp; Now</button>
+    </div>
+    <div class="card-grid" id="explore-grid"></div>
+  </div>
+</div>
+
+<!-- FOUNDERS PAGE -->
+<div class="page" id="page-founders">
+  <div class="founders-wrap" id="founders-list-view">
+    <div class="section-title">The Founders</div>
+    <div class="section-subtitle sans">Not myths. Not monuments. Real people who made consequential decisions under impossible pressure — and left a record of exactly how they thought.</div>
+    <div class="founder-grid">
+      <div class="founder-card" onclick="showFounderDetail('washington')">
+        <div class="founder-initial">W</div>
+        <div class="founder-name">George Washington</div>
+        <div class="founder-role sans">Commander-in-Chief · 1st President</div>
+      </div>
+      <div class="founder-card" onclick="showFounderDetail('madison')">
+        <div class="founder-initial">M</div>
+        <div class="founder-name">James Madison</div>
+        <div class="founder-role sans">Father of the Constitution</div>
+      </div>
+      <div class="founder-card" onclick="showFounderDetail('hamilton')">
+        <div class="founder-initial">H</div>
+        <div class="founder-name">Alexander Hamilton</div>
+        <div class="founder-role sans">First Secretary of the Treasury</div>
+      </div>
+      <div class="founder-card" onclick="showFounderDetail('jefferson')">
+        <div class="founder-initial">J</div>
+        <div class="founder-name">Thomas Jefferson</div>
+        <div class="founder-role sans">Author of the Declaration</div>
+      </div>
+      <div class="founder-card" onclick="showFounderDetail('adams')">
+        <div class="founder-initial">A</div>
+        <div class="founder-name">John Adams</div>
+        <div class="founder-role sans">Diplomat · 2nd President</div>
+      </div>
+      <div class="founder-card">
+        <div class="founder-initial">F</div>
+        <div class="founder-name">Benjamin Franklin</div>
+        <div class="founder-role sans">Statesman · Inventor · Diplomat</div>
+      </div>
+      <div class="founder-card">
+        <div class="founder-initial">H</div>
+        <div class="founder-name">Patrick Henry</div>
+        <div class="founder-role sans">Orator · Anti-Federalist</div>
+      </div>
+      <div class="founder-card">
+        <div class="founder-initial">J</div>
+        <div class="founder-name">John Jay</div>
+        <div class="founder-role sans">First Chief Justice</div>
+      </div>
+    </div>
+  </div>
+  <div class="founders-wrap" id="founder-detail-view" style="display:none;">
+    <span class="detail-back" onclick="backToFounders()">← Back to Founders</span>
+    <div id="founder-detail-content"></div>
+  </div>
+</div>
+
+<!-- DEEP DETAIL PAGE -->
+<div class="page" id="page-deep">
+  <div class="deep-detail-wrap">
+    <span class="detail-back" onclick="backFromDeep()" id="deep-back-btn">← Back to today</span>
+    <div id="deep-detail-content"></div>
+  </div>
+</div>
+
+<!-- ASK THE FOUNDERS PAGE -->
+<div class="page" id="page-ask">
+  <div class="ask-wrap">
+    <div class="ask-header">
+      <div class="ask-title">Ask the Founders</div>
+      <div class="ask-subtitle sans">The tavern conversation is open. Ask anything about the founding era, the Constitution, or founding principles — and get an answer drawn directly from the historical record. No spin. No agenda. Just what they actually said.</div>
+    </div>
+    <div class="ask-suggestions sans">
+      <div class="ask-suggest-label">Try asking:</div>
+      <div class="ask-chips">
+        <button class="ask-chip" onclick="askQuestion('What does the word ramparts mean in the Star Spangled Banner?')">Ramparts in the anthem</button>
+        <button class="ask-chip" onclick="askQuestion('What would Madison think about executive orders today?')">Executive orders today</button>
+        <button class="ask-chip" onclick="askQuestion('What did the founders say about political parties?')">Political parties</button>
+        <button class="ask-chip" onclick="askQuestion('Did the founders intend the Second Amendment to cover individual ownership?')">Second Amendment intent</button>
+        <button class="ask-chip" onclick="askQuestion('What did Hamilton and Jefferson disagree about?')">Hamilton vs Jefferson</button>
+        <button class="ask-chip" onclick="askQuestion('How did ordinary people — not the founders — shape the revolution?')">The common man's role</button>
+        <button class="ask-chip" onclick="askQuestion('How did the founders view taxation without representation?')">Taxation</button>
+        <button class="ask-chip" onclick="askQuestion('What did the founders say about freedom of the press?')">Freedom of the press</button>
+      </div>
+    </div>
+    <div class="ask-input-row">
+      <input type="text" class="ask-input" id="ask-input" placeholder="Ask your question about the founders or founding principles..." onkeydown="if(event.key==='Enter') submitAsk()">
+      <button class="ask-submit" onclick="submitAsk()" id="ask-btn">Ask</button>
+    </div>
+    <div id="ask-response-area"></div>
+    <div class="ask-history" id="ask-history"></div>
+  </div>
+</div>
+
+<!-- QUIZ PAGE -->
+<div class="page" id="page-quiz">
+  <div class="quiz-wrap">
+    <div id="quiz-active">
+      <div class="quiz-progress"><div class="quiz-progress-fill" id="quiz-bar" style="width:0%"></div></div>
+      <div class="quiz-q-num sans" id="quiz-num">Question 1 of 5</div>
+      <div class="quiz-question" id="quiz-q"></div>
+      <div id="quiz-options"></div>
+      <div class="quiz-explanation" id="quiz-explain"></div>
+      <div class="quiz-next" id="quiz-next-wrap">
+        <button class="btn-primary" onclick="nextQuestion()">Next question →</button>
+      </div>
+    </div>
+    <div id="quiz-done" style="display:none;">
+      <div class="quiz-score">
+        <div class="score-num" id="score-display">4/5</div>
+        <div class="score-label sans" id="score-label">Great work — the founders would be proud.</div>
+        <button class="btn-primary" onclick="resetQuiz()" style="margin-bottom:12px;">Try another quiz</button><br>
+        <button class="btn-secondary" onclick="showPage('explore')" style="margin-top:8px;">Explore the documents</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const exploreData = [
+  { tag: 'document', title: 'The Declaration of Independence', snippet: 'Why Jefferson\'s opening lines changed the course of world history', filter: 'document' },
+  { tag: 'document', title: 'Federalist No. 10 — Factions', snippet: 'Madison\'s warning about political parties and how to survive them', filter: 'document' },
+  { tag: 'principle', title: 'Freedom of speech', snippet: 'What the First Amendment actually says — and what it doesn\'t', filter: 'principle' },
+  { tag: 'principle', title: 'Separation of powers', snippet: 'Why three branches, and why each one was designed to fight the others', filter: 'principle' },
+  { tag: 'principle', title: 'The right to bear arms', snippet: 'The Second Amendment in its full historical and legal context', filter: 'principle' },
+  { tag: 'debate', title: 'Federalists vs Anti-Federalists', snippet: 'The argument that nearly stopped the Constitution from being ratified', filter: 'debate' },
+  { tag: 'then-now', title: 'Executive overreach — then and now', snippet: 'What Madison feared about the presidency, and whether he was right', filter: 'then-now' },
+  { tag: 'then-now', title: 'The press and the republic', snippet: 'Jefferson on newspapers — and what he\'d make of the internet', filter: 'then-now' },
+  { tag: 'document', title: 'The Bill of Rights — all ten amendments', snippet: 'Why they almost weren\'t included, and what each one actually protects', filter: 'document' },
+  { tag: 'founder', title: 'Washington\'s Farewell Address', snippet: 'His warnings about political parties, foreign entanglements, and debt', filter: 'founder' },
+  { tag: 'principle', title: 'Federalism and the Tenth Amendment', snippet: 'The line between federal and state power — and who draws it', filter: 'principle' },
+  { tag: 'debate', title: 'Was the Constitution pro-slavery?', snippet: 'The three-fifths compromise, its context, and what the founders actually said', filter: 'debate' },
+];
+
+let currentFilter = 'all';
+
+function renderCards(data) {
+  const grid = document.getElementById('explore-grid');
+  grid.innerHTML = data.map(d => `
+    <div class="explore-card">
+      <div class="card-tag sans">${d.tag}</div>
+      <div class="card-title">${d.title}</div>
+      <div class="card-snippet sans">${d.snippet}</div>
+    </div>
+  `).join('');
+}
+
+function filterCards(query) {
+  const q = query.toLowerCase();
+  const filtered = exploreData.filter(d =>
+    (currentFilter === 'all' || d.filter === currentFilter) &&
+    (d.title.toLowerCase().includes(q) || d.snippet.toLowerCase().includes(q) || d.tag.toLowerCase().includes(q))
+  );
+  renderCards(filtered);
+}
+
+function setFilter(f, btn) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  filterCards(document.querySelector('.explore-search').value);
+}
+
+renderCards(exploreData);
+
+const founders = {
+  washington: {
+    name: 'George Washington',
+    role: 'Commander-in-Chief · 1st President of the United States',
+    born: 'February 22, 1732 · Westmoreland County, Virginia',
+    died: 'December 14, 1799',
+    quote: 'However [political parties] may now and then answer popular ends, they are likely in the course of time and things, to become potent engines, by which cunning, ambitious, and unprincipled men will be enabled to subvert the power of the people.',
+    quoteAttr: 'Farewell Address, 1796',
+    bio: 'Washington was not a political theorist — he was a practitioner. What made him extraordinary was not brilliance of argument but soundness of character. He could have been king. He chose not to be. That choice, made twice (after the Revolution and after his second term), was itself the most powerful founding act. By voluntarily surrendering power, he established the precedent that the republic, not the man, was sovereign.',
+    legacy: 'His Farewell Address warned against three specific dangers: permanent foreign alliances, political factions, and federal debt. All three warnings remain relevant today.'
+  },
+  madison: {
+    name: 'James Madison',
+    role: 'Father of the Constitution · 4th President of the United States',
+    born: 'March 16, 1751 · Port Conway, Virginia',
+    died: 'June 28, 1836',
+    quote: 'Knowledge will forever govern ignorance; and a people who mean to be their own governors must arm themselves with the power which knowledge gives.',
+    quoteAttr: 'Letter to W.T. Barry, 1822',
+    bio: 'Madison arrived at the Constitutional Convention in 1787 better prepared than anyone. He had spent months studying the history of every confederacy and republic he could find, cataloguing their failures. His Virginia Plan became the Convention\'s working document. He then co-wrote the Federalist Papers to win ratification, and authored the Bill of Rights to secure its acceptance. No single person did more to create the architecture of American government.',
+    legacy: 'His Federalist No. 10 and No. 51 remain the clearest explanations of why the Constitution was designed as it was — and why those design choices still matter.'
+  },
+  hamilton: {
+    name: 'Alexander Hamilton',
+    role: 'First Secretary of the Treasury · Co-author of The Federalist Papers',
+    born: 'January 11, 1755 · Charlestown, Nevis',
+    died: 'July 12, 1804',
+    quote: 'A nation which can prefer disgrace to danger is prepared for a master, and deserves one.',
+    quoteAttr: 'The Works of Alexander Hamilton, 1774',
+    bio: 'Hamilton was the founders\' most relentless advocate for a strong national government. An immigrant who rose through sheer intellectual force, he built the financial architecture of the new republic — the national bank, federal assumption of state debts, the customs service — from scratch. His rivalry with Jefferson and Madison defined the first great debate of American political life: how much power should the federal government hold?',
+    legacy: 'Hamilton\'s vision of an energetic federal government and a commercial republic largely prevailed. His financial system made America\'s growth possible — and the debate he started with Jefferson has never fully ended.'
+  },
+  jefferson: {
+    name: 'Thomas Jefferson',
+    role: 'Author of the Declaration · 3rd President of the United States',
+    born: 'April 13, 1743 · Shadwell, Virginia',
+    died: 'July 4, 1826',
+    quote: 'The tree of liberty must be refreshed from time to time with the blood of patriots and tyrants. It is its natural manure.',
+    quoteAttr: 'Letter to William Stephens Smith, 1787',
+    bio: 'Jefferson\'s Declaration of Independence is the most consequential piece of political writing in American history — perhaps in world history. In fewer than 1,500 words he articulated a philosophy of human rights and legitimate government that still resonates globally. Yet Jefferson himself was a man of profound contradictions: the author of "all men are created equal" enslaved over 600 people in his lifetime. Understanding him fully means holding both truths simultaneously.',
+    legacy: 'Jefferson\'s vision of a decentralized agrarian republic lost to Hamilton\'s commercial federalism — yet his language in the Declaration became the moral standard by which every subsequent American reform movement, including abolition and civil rights, made its case.'
+  },
+  adams: {
+    name: 'John Adams',
+    role: 'Diplomat · 1st Vice President · 2nd President of the United States',
+    born: 'October 30, 1735 · Braintree, Massachusetts',
+    died: 'July 4, 1826',
+    quote: 'Liberty cannot be preserved without a general knowledge among the people, who have a right... and a desire to know; but besides this, they have a right, an indisputable, unalienable, indefeasible, divine right to that most dreaded and envied kind of knowledge — I mean of the characters and conduct of their rulers.',
+    quoteAttr: 'A Dissertation on the Canon and Feudal Law, 1765',
+    bio: 'Adams was the most underappreciated founder. He secured the critical French alliance that won the Revolution, negotiated the Treaty of Paris, and served as the republic\'s first real test of peaceful power transfer. He lost re-election to Jefferson and accepted the result — normalizing the precedent Washington had set. His Defence of the Constitutions of Government is one of the most serious works of political theory produced in the founding era.',
+    legacy: 'Adams\' insistence on the rule of law over popular passion — including his defense of British soldiers after the Boston Massacre — stands as a model of principled courage in public life.'
+  }
+};
+
+function showFounderDetail(key) {
+  const f = founders[key];
+  if (!f) return;
+  document.getElementById('founders-list-view').style.display = 'none';
+  document.getElementById('founder-detail-view').style.display = 'block';
+  document.getElementById('founder-detail-content').innerHTML = `
+    <div style="margin-bottom:2rem;">
+      <div class="sans" style="font-size:12px; color:#C8102E; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.4rem;">The Founders</div>
+      <div class="section-title">${f.name}</div>
+      <div class="sans" style="font-size:14px; color:#718096; margin-bottom:0.25rem;">${f.role}</div>
+      <div class="sans" style="font-size:13px; color:#CBD5E0;">b. ${f.born} &nbsp;·&nbsp; d. ${f.died}</div>
+    </div>
+    <div class="quote-wrap">
+      <div class="quote-text">"${f.quote}"</div>
+      <div class="quote-attr sans">— ${f.quoteAttr}</div>
+    </div>
+    <div class="section-head sans">Biography</div>
+    <div class="body-text">${f.bio}</div>
+    <div class="section-head sans">Legacy</div>
+    <div class="body-text">${f.legacy}</div>
+    <div style="margin-top:2rem; display:flex; gap:10px;">
+      <button class="btn-primary" onclick="showPage('quiz')">Quiz: ${f.name.split(' ')[1]}</button>
+      <button class="btn-secondary" onclick="showPage('explore')">Related documents</button>
+    </div>
+  `;
+  showPage('founders');
+}
+
+function backToFounders() {
+  document.getElementById('founders-list-view').style.display = 'block';
+  document.getElementById('founder-detail-view').style.display = 'none';
+}
+
+const quizData = [
+  {
+    q: 'In Federalist No. 51, Madison wrote "Ambition must be made to counteract ambition." What principle was he defending?',
+    options: ['Freedom of the press', 'Separation of powers and checks and balances', 'The right to bear arms', 'Freedom of religion'],
+    correct: 1,
+    explain: 'Madison was arguing for the three-branch structure of the Constitution. By designing the branches to compete with each other, he believed no single faction could gain total control — a structural solution to the problem of human ambition.'
+  },
+  {
+    q: 'Who wrote the Declaration of Independence?',
+    options: ['John Adams', 'Benjamin Franklin', 'Thomas Jefferson', 'James Madison'],
+    correct: 2,
+    explain: 'Jefferson was the primary author, though Franklin and Adams made revisions. Jefferson drew heavily on John Locke\'s philosophy of natural rights — particularly the idea that governments derive their just powers from the consent of the governed.'
+  },
+  {
+    q: 'The First Amendment protects freedom of speech "from" what?',
+    options: ['Other citizens criticizing you', 'Private companies censoring content', 'Government restriction or punishment', 'Foreign influence'],
+    correct: 2,
+    explain: 'The First Amendment is a limitation on government — "Congress shall make no law..." It does not prevent private individuals, companies, or platforms from limiting speech. The founders\' concern was specifically state power used to silence political dissent.'
+  },
+  {
+    q: 'Washington\'s Farewell Address (1796) warned against all of the following EXCEPT:',
+    options: ['Political factions and parties', 'Permanent foreign alliances', 'A standing national army', 'Excessive national debt'],
+    correct: 2,
+    explain: 'Washington warned about political parties, foreign entanglements, and debt — but not standing armies per se. In fact, having just led a revolutionary army, he understood military necessity. His primary warnings were about what he saw as the greatest threats to republican government.'
+  },
+  {
+    q: 'The Tenth Amendment states that powers not delegated to the federal government are reserved to whom?',
+    options: ['The President', 'The Supreme Court', 'The states, or the people', 'Congress'],
+    correct: 2,
+    explain: 'This is the foundational text of American federalism. Madison argued in Federalist 45 that federal powers were "few and defined" while state powers were "numerous and indefinite." The Tenth Amendment codified this as a hard limit on federal authority.'
+  }
+];
+
+let qIndex = 0;
+let score = 0;
+let answered = false;
+
+function renderQuestion() {
+  const q = quizData[qIndex];
+  document.getElementById('quiz-num').textContent = `Question ${qIndex + 1} of ${quizData.length}`;
+  document.getElementById('quiz-bar').style.width = `${(qIndex / quizData.length) * 100}%`;
+  document.getElementById('quiz-q').textContent = q.q;
+  document.getElementById('quiz-options').innerHTML = q.options.map((o, i) =>
+    `<button class="quiz-option sans" onclick="answer(${i})">${o}</button>`
+  ).join('');
+  document.getElementById('quiz-explain').className = 'quiz-explanation';
+  document.getElementById('quiz-explain').textContent = '';
+  document.getElementById('quiz-next-wrap').className = 'quiz-next';
+  answered = false;
+}
+
+function answer(i) {
+  if (answered) return;
+  answered = true;
+  const q = quizData[qIndex];
+  const btns = document.querySelectorAll('.quiz-option');
+  btns.forEach((b, j) => {
+    if (j === q.correct) b.classList.add('correct');
+    else if (j === i && i !== q.correct) b.classList.add('wrong');
+    else if (j !== i && j !== q.correct) b.classList.add('reveal');
+  });
+  if (i === q.correct) score++;
+  const explain = document.getElementById('quiz-explain');
+  explain.textContent = q.explain;
+  explain.className = 'quiz-explanation show';
+  document.getElementById('quiz-next-wrap').className = 'quiz-next show';
+}
+
+function nextQuestion() {
+  qIndex++;
+  if (qIndex >= quizData.length) {
+    document.getElementById('quiz-active').style.display = 'none';
+    document.getElementById('quiz-done').style.display = 'block';
+    document.getElementById('score-display').textContent = `${score}/${quizData.length}`;
+    const labels = ['Keep studying — the founders reward persistence.', 'Good foundation — keep building.', 'Solid knowledge of the founding era.', 'Strong — the founders would approve.', 'Excellent — a true student of the republic.'];
+    document.getElementById('score-label').textContent = labels[score] || labels[4];
+  } else {
+    renderQuestion();
+  }
+}
+
+function resetQuiz() {
+  qIndex = 0; score = 0; answered = false;
+  document.getElementById('quiz-active').style.display = 'block';
+  document.getElementById('quiz-done').style.display = 'none';
+  renderQuestion();
+}
+
+const deepDetails = {
+  'madison-profile': {
+    tag: 'Founder profile',
+    title: 'James Madison',
+    subtitle: 'Father of the Constitution · 4th President · Author of Federalist No. 51',
+    sections: [
+      { head: 'The man most responsible for the Constitution', body: 'Madison arrived at Philadelphia in 1787 more prepared than anyone else in the room. He had spent months in the preceding year reading every book on confederacies and republics he could find — the Amphictyonic League of ancient Greece, the Achaean League, the Swiss Confederation, the Dutch Republic — cataloguing their failures with methodical precision. He arrived with a plan already drafted. The Virginia Plan became the Convention\'s working document from the first week.' },
+      { head: 'The insight behind Federalist No. 51', body: 'Madison\'s genius in Federalist 51 was to stop arguing that virtuous men would govern virtuously — and instead design a system that didn\'t require them to. "If men were angels, no government would be necessary." Since they weren\'t, you needed structure: separate institutions with separate powers, each with the means and the self-interest to resist encroachment by the others. Ambition counteracting ambition. It was political engineering, not moral philosophy.' },
+      { head: 'The Bill of Rights — Madison changed his mind', body: 'Madison originally opposed including a Bill of Rights. He thought enumerated rights were unnecessary and potentially dangerous — if you listed specific rights, did that mean unlisted ones didn\'t exist? He came around after ratification, partly persuaded by Jefferson, and became the Bill of Rights\' primary author in Congress. The Ninth Amendment — "the enumeration of certain rights shall not be construed to deny or disparage others retained by the people" — was his answer to his own earlier objection.' },
+      { head: 'His most important warning', body: '"Knowledge will forever govern ignorance; and a people who mean to be their own governors must arm themselves with the power which knowledge gives." Written in 1822, it remains Madison\'s most relevant sentence for the modern era.' }
+    ],
+    quote: 'The accumulation of all powers, legislative, executive, and judiciary, in the same hands, whether of one, a few, or many... may justly be pronounced the very definition of tyranny.',
+    quoteAttr: 'Federalist No. 47, 1788'
+  },
+  'federalist-51': {
+    tag: 'Primary source',
+    title: 'Federalist No. 51',
+    subtitle: 'James Madison · Published February 6, 1788 · The Independent Journal',
+    sections: [
+      { head: 'Why this document matters', body: 'Federalist No. 51 is the clearest explanation ever written of why the American government was designed as it was. Madison was not describing the Constitution abstractly — he was making the case for ratification to skeptical New Yorkers, explaining why the three-branch structure with checks and balances was the only system that could survive the reality of human nature.' },
+      { head: 'The central argument', body: 'The problem Madison was solving: how do you give a government enough power to govern effectively, while preventing that power from being abused? His answer was structural. Give each branch the means to resist the others. Make the branches dependent on different constituencies. Divide power between federal and state governments as a second layer of protection. "In framing a government which is to be administered by men over men, the great difficulty lies in this: you must first enable the government to control the governed; and in the next place oblige it to control itself."' },
+      { head: 'The famous passage in full context', body: '"But what is government itself but the greatest of all reflections on human nature? If men were angels, no government would be necessary. If angels were to govern men, neither external nor internal controls on government would be necessary. In framing a government which is to be administered by men over men, the great difficulty lies in this: you must first enable the government to control the governed; and in the next place oblige it to control itself. A dependence on the people is, no doubt, the primary control on the government; but experience has taught mankind the necessity of auxiliary precautions."' },
+      { head: 'What "auxiliary precautions" meant', body: 'Madison\'s "auxiliary precautions" were the checks and balances themselves — the veto, the Senate\'s advice and consent, judicial review, the amendment process. Each was a structural mechanism designed to force deliberation and prevent any single faction from moving too fast. The system was designed to be slow by intention. Gridlock, in Madison\'s view, was often a feature, not a bug.' }
+    ],
+    quote: 'In framing a government which is to be administered by men over men, the great difficulty lies in this: you must first enable the government to control the governed; and in the next place oblige it to control itself.',
+    quoteAttr: 'Federalist No. 51, James Madison, 1788'
+  },
+  'montesquieu': {
+    tag: 'Historical context',
+    title: 'Montesquieu and the separation of powers',
+    subtitle: 'The French philosopher whose ideas crossed the Atlantic and shaped the Constitution',
+    sections: [
+      { head: 'Who was Montesquieu?', body: 'Charles-Louis de Secondat, Baron de Montesquieu, published "The Spirit of the Laws" in 1748 — nearly 40 years before the Constitutional Convention. A French judge and political philosopher, he had studied governments across history and cultures, and concluded that liberty was most secure when the powers of government were separated into distinct branches. His work was one of the most widely read political texts in colonial America.' },
+      { head: 'The idea the founders borrowed', body: 'Montesquieu observed the English constitution and identified what he believed was its key feature: the separation of legislative and executive power. "There is no liberty if the judiciary power be not separated from the legislative and executive." This tripartite model — legislative, executive, judicial — became the direct template for the American Constitution. Madison cited Montesquieu repeatedly in the Federalist Papers, calling him "the oracle who is always consulted and cited" on the subject of separation of powers.' },
+      { head: 'Where the founders went further', body: 'Montesquieu described separation of powers as a structural feature. Madison and Hamilton turned it into an active mechanical system — with each branch not just separate, but armed with tools to check and resist the others. The presidential veto, Senate confirmation, judicial review, impeachment — these were the founders\' innovations on top of Montesquieu\'s foundation. They weren\'t just separating power; they were making the branches fight each other.' },
+      { head: 'The irony', body: 'Montesquieu was analyzing the British system — a constitutional monarchy — and the founders used his analysis to design a republic without a king. They took the observation that separated power produces liberty, stripped out the monarchy, and rebuilt the concept from scratch around elected representatives and an independent judiciary.' }
+    ],
+    quote: 'There is no liberty if the power of judging be not separated from the legislative and executive powers.',
+    quoteAttr: 'Montesquieu, The Spirit of the Laws, 1748'
+  },
+  'crown-abuses': {
+    tag: 'Historical context',
+    title: 'What the founders had witnessed under the Crown',
+    subtitle: 'The specific abuses that made checks and balances not just desirable — but urgent',
+    sections: [
+      { head: 'They weren\'t theorizing — they were reacting', body: 'The founders didn\'t design the separation of powers as an abstract exercise. They were men who had lived under a system where power concentrated, and they had the scars to prove it. The Declaration of Independence is, among other things, a bill of particulars — 27 specific grievances against the King. Each one was a lesson that became a constitutional design choice.' },
+      { head: 'The grievances that became constitutional clauses', body: 'King George had dissolved colonial legislatures when they resisted his edicts — so the Constitution made Congress impossible to dissolve. Crown-appointed judges served at the King\'s pleasure and ruled in his favor — so the Constitution gave federal judges lifetime tenure, removing them from political pressure. The King had quartered troops in private homes without consent — so the Third Amendment prohibited it. He had imposed taxes without colonial representation — so the Constitution required all revenue bills to originate in the elected House.' },
+      { head: 'The lesson about concentrated power', body: 'What the founders had witnessed was not an unusually evil king. George III was, by historical standards, a fairly ordinary monarch. That was Madison\'s point. The problem wasn\'t the man — it was the system that gave one man unchecked authority. The Constitution\'s checks and balances were designed to make tyranny structurally impossible, regardless of who held power. Good men wouldn\'t need the constraints. Bad men wouldn\'t be able to overcome them.' },
+      { head: 'The phrase that captured it all', body: 'Jefferson\'s summary in the Declaration: "A Prince, whose character is thus marked by every act which may define a Tyrant, is unfit to be the ruler of a free people." The founders\' answer was not to find a better prince. It was to build a system that didn\'t need one.' }
+    ],
+    quote: 'He has erected a multitude of New Offices, and sent hither swarms of Officers to harass our people, and eat out their substance.',
+    quoteAttr: 'Declaration of Independence, 1776 — one of 27 grievances against the Crown'
+  },
+  'anti-federalist': {
+    tag: 'The debates',
+    title: 'The Anti-Federalist Papers',
+    subtitle: 'The founders who opposed ratification — and the warnings that proved prescient',
+    sections: [
+      { head: 'The debate we forget', body: 'History remembers the Federalists — Hamilton, Madison, Jay — because they won. But the Anti-Federalists were not cranks or reactionaries. They were serious thinkers who raised objections that, in many cases, history has validated. Understanding both sides of the ratification debate gives a far richer picture of what the founders were actually arguing about.' },
+      { head: 'Who were the Anti-Federalists?', body: 'The most prominent Anti-Federalist writers wrote under pseudonyms: Brutus (likely Robert Yates of New York), Centinel (Samuel Bryan of Pennsylvania), and the Federal Farmer (possibly Melancton Smith). Patrick Henry and George Mason were prominent opponents who argued openly. These were men who had fought the Revolution alongside the Federalists — they disagreed not on principles but on whether the new Constitution adequately protected them.' },
+      { head: 'Their main objections', body: 'The Anti-Federalists worried that the federal government would eventually swallow the states. They feared the "necessary and proper" clause gave Congress unlimited implied powers. They thought a Senate serving six-year terms was dangerously insulated from public accountability. Most urgently, they demanded a Bill of Rights — the Constitution as written had none. On this last point, they won: Madison\'s Bill of Rights was the direct result of Anti-Federalist pressure during ratification.' },
+      { head: 'Brutus No. 1 — the most prophetic document', body: 'In October 1787, Brutus wrote that the federal judiciary, once established, would gradually expand federal power at the expense of the states, and that "there is no power above them that can correct their errors or control their decisions." He predicted that the Supreme Court would interpret the Constitution to mean whatever it needed to mean to expand federal authority. Many constitutional scholars today consider this the most accurate prediction in American political history.' }
+    ],
+    quote: 'This power, exercised without limitation, will introduce itself into every corner of the city, and country — It will wait upon the ladies at their toilett, and will not leave them in any of their domestic concerns.',
+    quoteAttr: 'Brutus, Anti-Federalist No. 1, 1787 — on the dangers of unlimited federal taxation'
+  }
+};
+
+let deepReturnPage = 'daily';
+
+function showDeepDetail(key) {
+  const d = deepDetails[key];
+  if (!d) return;
+  deepReturnPage = document.querySelector('.page.active').id.replace('page-', '');
+  const sectionsHTML = d.sections.map(s => `
+    <div class="section-head sans">${s.head}</div>
+    <div class="body-text" style="margin-bottom:1rem;">${s.body}</div>
+  `).join('');
+  document.getElementById('deep-detail-content').innerHTML = `
+    <div class="deep-tag sans">${d.tag}</div>
+    <div class="deep-title">${d.title}</div>
+    <div class="deep-subtitle sans">${d.subtitle}</div>
+    <div class="quote-wrap">
+      <div class="quote-text">"${d.quote}"</div>
+      <div class="quote-attr sans">— ${d.quoteAttr}</div>
+    </div>
+    ${sectionsHTML}
+    <div style="margin-top:2rem; display:flex; gap:10px; flex-wrap:wrap;">
+      <button class="btn-secondary" onclick="backFromDeep()">← Back</button>
+      <button class="btn-primary" onclick="showPage('quiz')">Test yourself on this</button>
+    </div>
+  `;
+  showPage('deep');
+  document.getElementById('nav-deep') && document.getElementById('nav-deep').classList.remove('active');
+}
+
+function backFromDeep() {
+  showPage(deepReturnPage);
+}
+
+function shareX() {
+  const text = encodeURIComponent('The founders didn\'t just distrust kings. They distrusted every concentration of power — including the one they were creating.\n\n"Ambition must be made to counteract ambition." — Madison, Federalist No. 51\n\nPick up where the tavern left off. 👇\nrampart1776.com | @rampart1776');
+  window.open('https://twitter.com/intent/tweet?text=' + text, '_blank');
+}
+
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+  const navEl = document.getElementById('nav-' + name);
+  if (navEl) navEl.classList.add('active');
+  if (name === 'quiz') renderQuestion();
+}
+
+const SYSTEM_PROMPT = `You are a historian and scholar of the American founding era (1760–1800), deeply versed in primary sources: the Declaration of Independence, the Constitution, the Federalist Papers, the Anti-Federalist Papers, founders' letters and diaries, Constitutional Convention records, and early Supreme Court decisions.
+
+When answering questions:
+- Ground every answer in what the historical record actually shows — the founders' own words, documented positions, and actions
+- Be specific: cite which founder said or wrote what, and in which document or letter
+- Acknowledge when founders disagreed with each other — they often did
+- When connecting founding principles to modern issues, be factual and analytical, not partisan
+- Keep answers substantive but readable — 3 to 5 paragraphs
+- End every response with a SOURCES line formatted exactly like this:
+SOURCES: [list the specific documents, letters, or writings you drew from, comma separated]
+
+Do not roleplay as a founder. Speak as a knowledgeable historian presenting the evidence.`;
+
+function askQuestion(q) {
+  document.getElementById('ask-input').value = q;
+  submitAsk();
+}
+
+async function submitAsk() {
+  const input = document.getElementById('ask-input');
+  const question = input.value.trim();
+  if (!question) return;
+
+  const btn = document.getElementById('ask-btn');
+  const area = document.getElementById('ask-response-area');
+
+  btn.disabled = true;
+  btn.textContent = 'Searching the record...';
+  input.value = '';
+
+  area.innerHTML = `
+    <div class="ask-loading">
+      <div class="ask-dot"></div>
+      <div class="ask-dot"></div>
+      <div class="ask-dot"></div>
+      <div class="ask-loading-text">Consulting the founding record...</div>
+    </div>`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: SYSTEM_PROMPT,
+        messages: [{ role: 'user', content: question }]
+      })
+    });
+
+    const data = await res.json();
+    const raw = data.content?.[0]?.text || '';
+
+    const sourceMatch = raw.match(/SOURCES:\s*(.+)$/ms);
+    const sources = sourceMatch ? sourceMatch[1].trim() : '';
+    const body = raw.replace(/SOURCES:\s*.+$/ms, '').trim();
+
+    const paragraphs = body.split(/\n\n+/).filter(p => p.trim())
+      .map(p => `<p>${p.trim()}</p>`).join('');
+
+    const sourceTags = sources
+      ? sources.split(',').map(s => `<span class="ask-source-tag">${s.trim()}</span>`).join('')
+      : '';
+
+    area.innerHTML = `
+      <div class="ask-response">
+        <div class="ask-q-label">Your question</div>
+        <div class="ask-q-text">${question}</div>
+        <div class="ask-answer">${paragraphs}</div>
+        ${sourceTags ? `<div class="ask-sources">
+          <div class="ask-sources-label">Primary sources consulted</div>
+          ${sourceTags}
+        </div>` : ''}
+      </div>`;
+
+  } catch (err) {
+    area.innerHTML = `<div class="ask-error">Something went wrong consulting the historical record. Please try again.</div>`;
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Ask';
+}
+</script>
+</body>
+</html>
