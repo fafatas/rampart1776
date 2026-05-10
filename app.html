@@ -768,6 +768,7 @@ async function submitAsk() {
 });
 
 const data = await res.json();
+console.log('API response:', JSON.stringify(data));
 const raw = data.answer || '';
 
     const sourceMatch = raw.match(/SOURCES:\s*(.+)$/ms);
