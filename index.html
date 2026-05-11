@@ -801,11 +801,14 @@
 <section class="signup" id="signup">
   <h2 class="signup-headline fade-in">Stand watch.<br>Start today.</h2>
   <p class="signup-sub fade-in">Free. One daily entry. No noise. Just the founding record — and why it still matters.</p>
-  <div class="signup-form fade-in">
-    <input type="email" class="signup-input" placeholder="Your email address" id="email-input">
-    <button class="signup-btn" onclick="handleSignup()">Join Rampart</button>
-  </div>
-  <div class="signup-fine fade-in">Free forever. No spam. Unsubscribe any time.</div>
+ <form name="rampart-signup" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="signup-form fade-in" id="signup-form">
+  <input type="hidden" name="form-name" value="rampart-signup">
+  <input type="hidden" name="bot-field" style="display:none">
+  <input type="email" name="email" class="signup-input" placeholder="Your email address" required>
+  <button type="submit" class="signup-btn">Join Rampart</button>
+</form>
+ <div class="signup-fine fade-in" id="signup-fine">Free forever. No spam. Unsubscribe any time.</div>
+<div id="signup-thanks" style="display:none; font-family:'DM Sans',sans-serif; font-size:16px; color:#B8860B; margin-top:1rem; font-style:italic;">Welcome to the rampart. Check your inbox.</div>
   <div class="signup-madison fade-in">
     <div class="signup-madison-quote">"Knowledge will forever govern ignorance; and a people who mean to be their own governors must arm themselves with the power which knowledge gives."</div>
     <div class="signup-madison-attr">— James Madison, 1822</div>
@@ -835,19 +838,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 });
-
-function handleSignup() {
-  const email = document.getElementById('email-input').value.trim();
-  if (!email || !email.includes('@')) {
-    document.getElementById('email-input').style.borderColor = '#C8102E';
-    return;
-  }
-  const btn = document.querySelector('.signup-btn');
-  btn.textContent = 'Welcome to the rampart.';
-  btn.style.background = '#0A1628';
-  btn.style.letterSpacing = '0.03em';
-  document.getElementById('email-input').style.borderColor = 'rgba(184,134,11,0.6)';
+const form = document.getElementById('signup-form');
+if (form) {
+  form.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const data = new FormData(form);
+    await fetch('/', { method: 'POST', body: data });
+    form.style.display = 'none';
+    document.getElementById('signup-fine').style.display = 'none';
+    document.getElementById('signup-thanks').style.display = 'block';
+  });
 }
+
 </script>
 
 </body>
