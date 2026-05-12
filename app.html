@@ -152,15 +152,6 @@
     .quote-text { font-size: 16px; }
   }
 </style>
- <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-10BYWFDKF4"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-10BYWFDKF4');
-</script>
 </head>
 <body>
 
@@ -174,9 +165,8 @@
     <a onclick="showPage('ask')" id="nav-ask">Ask</a>
   </div>
   <div class="nav-right">
-    <a href="/about" style="font-size:13px; color:#6A82A8; text-decoration:none; letter-spacing:0.04em; font-family:-apple-system,sans-serif;">About</a>
     <button class="btn-outline" onclick="showPage('ask')">Ask the Founders</button>
-    <a href="/#signup" class="btn-gold" style="text-decoration:none;">Join Free</a>
+    <button class="btn-gold">Join Free</button>
   </div>
 </nav>
 
@@ -313,17 +303,17 @@
         <div class="founder-name">John Adams</div>
         <div class="founder-role sans">Diplomat · 2nd President</div>
       </div>
-      <div class="founder-card">
+      <div class="founder-card" onclick="showFounderDetail('franklin')">
         <div class="founder-initial">F</div>
         <div class="founder-name">Benjamin Franklin</div>
         <div class="founder-role sans">Statesman · Inventor · Diplomat</div>
       </div>
-      <div class="founder-card">
+      <div class="founder-card" onclick="showFounderDetail('henry')">
         <div class="founder-initial">H</div>
         <div class="founder-name">Patrick Henry</div>
         <div class="founder-role sans">Orator · Anti-Federalist</div>
       </div>
-      <div class="founder-card">
+      <div class="founder-card" onclick="showFounderDetail('jay')">
         <div class="founder-initial">J</div>
         <div class="founder-name">John Jay</div>
         <div class="founder-role sans">First Chief Justice</div>
@@ -494,6 +484,36 @@ const founders = {
     quoteAttr: 'A Dissertation on the Canon and Feudal Law, 1765',
     bio: 'Adams was the most underappreciated founder. He secured the critical French alliance that won the Revolution, negotiated the Treaty of Paris, and served as the republic\'s first real test of peaceful power transfer. He lost re-election to Jefferson and accepted the result — normalizing the precedent Washington had set. His Defence of the Constitutions of Government is one of the most serious works of political theory produced in the founding era.',
     legacy: 'Adams\' insistence on the rule of law over popular passion — including his defense of British soldiers after the Boston Massacre — stands as a model of principled courage in public life.'
+  },
+  franklin: {
+    name: 'Benjamin Franklin',
+    role: 'Statesman · Inventor · Diplomat · Elder of the Convention',
+    born: 'January 17, 1706 · Boston, Massachusetts',
+    died: 'April 17, 1790',
+    quote: 'We must, indeed, all hang together, or most assuredly we shall all hang separately.',
+    quoteAttr: 'Attributed to Franklin at the signing of the Declaration of Independence, 1776',
+    bio: 'Franklin was 70 years old when the Declaration was signed — the oldest delegate by decades — and the most internationally famous American alive. He had already lived several full careers: printer, scientist, inventor, postmaster, journalist, and philosopher. His experiments with electricity were known across Europe. His wit was legendary. When the Continental Congress needed someone to secure the French alliance that would ultimately win the Revolution, there was only one choice. Franklin went to Paris, charmed the court of Louis XVI, and delivered the treaty that changed the war. At the Constitutional Convention in 1787 he was 81, frequently too ill to stand, and had to have his speeches read by others. He voted for the Constitution despite reservations — his closing speech, a masterpiece of intellectual humility, urged every delegate to do the same.',
+    legacy: 'Franklin\'s genius was breadth. He understood science, diplomacy, commerce, journalism, and political philosophy — and applied all of them to the founding. His Autobiography remains one of the great American texts, an argument in narrative form that self-improvement and civic virtue are inseparable. He founded America\'s first public library, first fire department, and first university. He was, in the truest sense, the original self-made American.'
+  },
+  henry: {
+    name: 'Patrick Henry',
+    role: 'Orator · Governor of Virginia · Anti-Federalist',
+    born: 'May 29, 1736 · Studley, Virginia',
+    died: 'June 6, 1799',
+    quote: 'Is life so dear, or peace so sweet, as to be purchased at the price of chains and slavery? Forbid it, Almighty God! I know not what course others may take; but as for me, give me liberty or give me death!',
+    quoteAttr: 'Speech to the Virginia Convention, March 23, 1775',
+    bio: 'Patrick Henry was the voice of the Revolution before there was a revolution. His 1775 speech to the Virginia Convention — delivered more than a year before the Declaration — was the most electrifying political speech in American history. He was a self-taught lawyer who had risen from poverty through sheer oratorical force, and his arguments against British taxation in the 1760s were the first serious legal challenge to Crown authority in the colonies. He served as Governor of Virginia twice. But Henry is equally important for what he opposed — he refused to attend the Constitutional Convention ("I smelt a rat," he said) and became the most prominent Anti-Federalist voice demanding a Bill of Rights before ratification.',
+    legacy: 'Henry\'s insistence on a Bill of Rights was not obstruction — it was the most consequential demand made during ratification. Madison\'s eventual authorship of the Bill of Rights was a direct response to Henry\'s pressure. The freedoms Americans take for granted today exist in no small part because Patrick Henry refused to accept the Constitution without them.'
+  },
+  jay: {
+    name: 'John Jay',
+    role: 'First Chief Justice of the United States · Co-author of The Federalist Papers · Diplomat',
+    born: 'December 23, 1745 · New York City, New York',
+    died: 'May 17, 1829',
+    quote: 'Nothing is more certain than the indispensable necessity of government, and it is equally undeniable, that whenever and however it is instituted, the people must cede to it some of their natural rights in order to vest it with requisite powers.',
+    quoteAttr: 'Federalist No. 2, 1787',
+    bio: 'John Jay is the most underappreciated Founder. He co-wrote the Federalist Papers with Hamilton and Madison, negotiated the Treaty of Paris that ended the Revolution, served as Secretary of Foreign Affairs under the Articles of Confederation, and became the first Chief Justice of the Supreme Court. Washington trusted him completely — when he needed someone for the most sensitive diplomatic missions, he called Jay. The Jay Treaty of 1794, which averted war with Britain, was deeply unpopular but almost certainly necessary. Jay was burned in effigy for negotiating it. He accepted the political cost and moved on. He also led one of the first organized efforts to abolish slavery in New York, helping found the New York Manumission Society in 1785.',
+    legacy: 'Jay\'s establishment of the Supreme Court\'s early practices — including the principle that the Court could decline cases it deemed beyond its jurisdiction — shaped the federal judiciary for generations. His Federalist No. 2 through No. 5, arguing for the necessity of union against foreign threats, remain some of the clearest arguments ever written for why the United States must remain united.'
   }
 };
 
@@ -771,15 +791,19 @@ async function submitAsk() {
     </div>`;
 
   try {
-    const res = await fetch('/.netlify/functions/ask', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ question })
-});
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: SYSTEM_PROMPT,
+        messages: [{ role: 'user', content: question }]
+      })
+    });
 
-const data = await res.json();
-console.log('API response:', JSON.stringify(data));
-const raw = data.answer || '';
+    const data = await res.json();
+    const raw = data.content?.[0]?.text || '';
 
     const sourceMatch = raw.match(/SOURCES:\s*(.+)$/ms);
     const sources = sourceMatch ? sourceMatch[1].trim() : '';
