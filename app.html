@@ -750,10 +750,6 @@ function showPage(name) {
   const navEl = document.getElementById('nav-' + name);
   if (navEl) navEl.classList.add('active');
   if (name === 'quiz') renderQuestion();
-  if (name === 'founders') {
-    document.getElementById('founders-list-view').style.display = 'block';
-    document.getElementById('founder-detail-view').style.display = 'none';
-  }
 }
 
 const SYSTEM_PROMPT = `You are a historian and scholar of the American founding era (1760–1800), deeply versed in primary sources: the Declaration of Independence, the Constitution, the Federalist Papers, the Anti-Federalist Papers, founders' letters and diaries, Constitutional Convention records, and early Supreme Court decisions.
