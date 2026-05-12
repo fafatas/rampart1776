@@ -1,5 +1,0 @@
-User-agent: *
-Allow: /
-Disallow: /.netlify/
-
-Sitemap: https://rampart1776.com/sitemap.xml
