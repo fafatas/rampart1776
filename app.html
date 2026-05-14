@@ -796,19 +796,6 @@ function showPage(name) {
   if (name === 'quiz') renderQuestion();
 }
 
-const SYSTEM_PROMPT = `You are a historian and scholar of the American founding era (1760–1800), deeply versed in primary sources: the Declaration of Independence, the Constitution, the Federalist Papers, the Anti-Federalist Papers, founders' letters and diaries, Constitutional Convention records, and early Supreme Court decisions.
-
-When answering questions:
-- Ground every answer in what the historical record actually shows — the founders' own words, documented positions, and actions
-- Be specific: cite which founder said or wrote what, and in which document or letter
-- Acknowledge when founders disagreed with each other — they often did
-- When connecting founding principles to modern issues, be factual and analytical, not partisan
-- Keep answers substantive but readable — 3 to 5 paragraphs
-- End every response with a SOURCES line formatted exactly like this:
-SOURCES: [list the specific documents, letters, or writings you drew from, comma separated]
-
-Do not roleplay as a founder. Speak as a knowledgeable historian presenting the evidence.`;
-
 function askQuestion(q) {
   document.getElementById('ask-input').value = q;
   submitAsk();
@@ -835,19 +822,14 @@ async function submitAsk() {
     </div>`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('/.netlify/functions/ask', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        system: SYSTEM_PROMPT,
-        messages: [{ role: 'user', content: question }]
-      })
+      body: JSON.stringify({ question })
     });
 
     const data = await res.json();
-    const raw = data.content?.[0]?.text || '';
+    const raw = data.answer || '';
 
     const sourceMatch = raw.match(/SOURCES:\s*(.+)$/ms);
     const sources = sourceMatch ? sourceMatch[1].trim() : '';
@@ -879,7 +861,11 @@ async function submitAsk() {
   btn.textContent = 'Ask';
 }
 
-loadDailyContent();
+try {
+  loadDailyContent();
+} catch (e) {
+  console.error('loadDailyContent failed:', e);
+}
 </script>
 </body>
 </html>
