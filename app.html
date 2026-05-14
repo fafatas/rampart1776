@@ -172,23 +172,23 @@
 
 <!-- DAILY PAGE -->
 <div class="page active" id="page-daily">
-  <div class="hero-bar sans">Pick up where the tavern left off &nbsp;·&nbsp; <span>September 17 — Constitution Day · Special Series This Week</span></div>
+  <div class="hero-bar sans">Pick up where the tavern left off &nbsp;·&nbsp; <span id="hero-date">September 17 — Constitution Day · Special Series This Week</span></div>
   <div class="daily-layout">
     <div class="streak-bar sans">
       <div class="streak-num">7</div>
       <div class="streak-label">day streak — keep it going</div>
     </div>
-    <div class="series-pill sans">The Documents &nbsp;·&nbsp; Week 3</div>
-    <div class="daily-principle sans">Today's principle: Separation of powers</div>
-    <div class="daily-hook">The founders didn't just distrust kings. They distrusted every concentration of power — including the one they were creating.</div>
+    <div class="series-pill sans" id="series-pill">The Documents &nbsp;·&nbsp; Week 3</div>
+    <div class="daily-principle sans" id="daily-principle">Today's principle: Separation of powers</div>
+    <div class="daily-hook" id="daily-hook">The founders didn't just distrust kings. They distrusted every concentration of power — including the one they were creating.</div>
     <div class="quote-wrap">
-      <div class="quote-text">"Ambition must be made to counteract ambition... If men were angels, no government would be necessary. If angels were to govern men, neither external nor internal controls on government would be necessary."</div>
-      <div class="quote-attr sans">— James Madison, Federalist No. 51, 1788</div>
+      <div class="quote-text" id="daily-quote">"Ambition must be made to counteract ambition... If men were angels, no government would be necessary. If angels were to govern men, neither external nor internal controls on government would be necessary."</div>
+      <div class="quote-attr sans" id="daily-quote-attr">— James Madison, Federalist No. 51, 1788</div>
     </div>
     <div class="section-head sans">Historical context</div>
-    <div class="body-text">Madison was making the case for the Constitution's three-branch design. He had studied every republic in history and concluded they all failed the same way — power collected, then corrupted. His solution was structural: pit the branches against each other so that no single faction could dominate. This wasn't cynicism — it was realism about human nature built into law.</div>
+    <div class="body-text" id="daily-context">Madison was making the case for the Constitution's three-branch design. He had studied every republic in history and concluded they all failed the same way — power collected, then corrupted. His solution was structural: pit the branches against each other so that no single faction could dominate. This wasn't cynicism — it was realism about human nature built into law.</div>
     <div class="section-head sans">Why it matters today</div>
-    <div class="relevance-text">When any branch overreaches — executive orders, legislative abdication, judicial activism — Madison's warning is the correct framework for the debate.</div>
+    <div class="relevance-text" id="daily-relevance">When any branch overreaches — executive orders, legislative abdication, judicial activism — Madison's warning is the correct framework for the debate.</div>
     <div class="action-row">
       <button class="btn-secondary" onclick="showPage('quiz')">Test yourself</button>
       <button class="btn-x sans" onclick="shareX()">
@@ -200,9 +200,9 @@
     <div class="deeper-panel" id="deeper-panel">
       <div class="deeper-header-static sans">
         <span class="deeper-title sans">Dig deeper</span>
-        <span style="font-size:12px; color:#718096; font-family:-apple-system,sans-serif;">Federalist No. 51 &amp; separation of powers</span>
+        <span id="deeper-subtitle" style="font-size:12px; color:#718096; font-family:-apple-system,sans-serif;">Federalist No. 51 &amp; separation of powers</span>
       </div>
-      <div class="deeper-body-open">
+      <div class="deeper-body-open" id="deeper-body">
         <div class="deeper-item" onclick="showDeepDetail('madison-profile')">
           <div class="deeper-icon">M</div>
           <div>
@@ -248,7 +248,7 @@
 
     <hr class="divider">
     <div style="display:flex; justify-content:space-between; align-items:center;">
-      <div class="sans" style="font-size:13px; color:#718096;">Tomorrow: The Bill of Rights — why it almost wasn't included</div>
+      <div class="sans" id="daily-tomorrow" style="font-size:13px; color:#718096;">Tomorrow: The Bill of Rights — why it almost wasn't included</div>
       <button class="btn-secondary sans" style="font-size:12px; padding:6px 14px;">Get reminder</button>
     </div>
   </div>
@@ -387,6 +387,7 @@
   </div>
 </div>
 
+<script src="content.js"></script>
 <script>
 const exploreData = [
   { tag: 'document', title: 'The Declaration of Independence', snippet: 'Why Jefferson\'s opening lines changed the course of world history', filter: 'document' },
@@ -739,8 +740,51 @@ function backFromDeep() {
 }
 
 function shareX() {
-  const text = encodeURIComponent('The founders didn\'t just distrust kings. They distrusted every concentration of power — including the one they were creating.\n\n"Ambition must be made to counteract ambition." — Madison, Federalist No. 51\n\nPick up where the tavern left off. 👇\nrampart1776.com | @rampart1776');
+  const e = currentEntry;
+  if (!e) return;
+  const text = encodeURIComponent(
+    e.hook + '\n\n“' + e.quote.slice(0, 140) + '…” — ' + e.quoteAttr +
+    '\n\nPick up where the tavern left off. 👇\nrampart1776.com | @rampart1776'
+  );
   window.open('https://twitter.com/intent/tweet?text=' + text, '_blank');
+}
+
+let currentEntry = null;
+
+function loadDailyContent() {
+  currentEntry = getDayEntry(0);
+  const tomorrowEntry = getDayEntry(1);
+  const today = new Date();
+  const displayDate = today.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+
+  document.getElementById('hero-date').textContent = displayDate + ' — ' + currentEntry.principle;
+
+  const weekNum = Math.ceil(currentEntry.day / 7);
+  document.getElementById('series-pill').textContent = 'Principles of the Republic · Week ' + weekNum;
+
+  document.getElementById(‘daily-principle’).textContent = `Today’s principle: ${currentEntry.principle}`;
+  document.getElementById('daily-hook').textContent = currentEntry.hook;
+  document.getElementById('daily-quote').textContent = '“' + currentEntry.quote + '”';
+  document.getElementById('daily-quote-attr').textContent = '— ' + currentEntry.quoteAttr;
+  document.getElementById('daily-context').textContent = currentEntry.context;
+  document.getElementById('daily-relevance').textContent = currentEntry.relevance;
+
+  document.getElementById('deeper-subtitle').textContent = currentEntry.principle;
+
+  const icons = ['§', '❧', '⚖', '❖', '•'];
+  document.getElementById('deeper-body').innerHTML = currentEntry.digDeeper.map((item, i) => `
+    <div class="deeper-item">
+      <div class="deeper-icon" style="font-size:13px; color:#4A5568;">${icons[i]}</div>
+      <div>
+        <div class="deeper-item-title sans">${item.title}</div>
+        <div class="deeper-item-desc sans">${item.description}</div>
+      </div>
+      <div class="deeper-arrow-right">→</div>
+    </div>
+  `).join('');
+
+  const tomorrowHook = tomorrowEntry.hook.split('.')[0];
+  document.getElementById('daily-tomorrow').textContent = 'Tomorrow: ' + tomorrowEntry.principle + ' — ' + tomorrowHook;
 }
 
 function showPage(name) {
@@ -834,6 +878,8 @@ async function submitAsk() {
   btn.disabled = false;
   btn.textContent = 'Ask';
 }
+
+loadDailyContent();
 </script>
 </body>
 </html>
