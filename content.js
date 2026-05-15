@@ -40,11 +40,11 @@ const DAILY_CONTENT = [
     context: 'Madison was making the case for the Constitution\'s three-branch design. He had studied every republic in history and concluded they all failed the same way — power collected, then corrupted. His solution was structural: pit the branches against each other so that no single faction could dominate. This wasn\'t cynicism — it was realism about human nature built into law.',
     relevance: 'When any branch overreaches — executive orders, legislative abdication, judicial activism — Madison\'s warning is the correct framework for the debate. Not partisan outrage. Constitutional structure.',
     digDeeper: [
-      { title: 'James Madison — Father of the Constitution', description: 'His life, beliefs, contradictions, and why Federalist 51 is his masterwork' },
-      { title: 'Full text: Federalist No. 51', description: 'Read Madison\'s complete argument for checks and balances' },
-      { title: 'Montesquieu\'s influence on Madison', description: 'The French philosopher whose ideas crossed the Atlantic and shaped the three-branch design' },
-      { title: 'The abuses this system was designed to prevent', description: 'What the founders had witnessed firsthand under the Crown' },
-      { title: 'Anti-Federalist Papers — the other side', description: 'What the Constitution\'s opponents feared, and whether they were right' }
+      { key: 'madison-profile', title: 'James Madison — Father of the Constitution', description: 'His life, beliefs, contradictions, and why Federalist 51 is his masterwork' },
+      { key: 'federalist-51', title: 'Full text: Federalist No. 51', description: 'Read Madison\'s complete argument for checks and balances' },
+      { key: 'montesquieu', title: 'Montesquieu\'s influence on Madison', description: 'The French philosopher whose ideas crossed the Atlantic and shaped the three-branch design' },
+      { key: 'crown-abuses', title: 'The abuses this system was designed to prevent', description: 'What the founders had witnessed firsthand under the Crown' },
+      { key: 'anti-federalist', title: 'Anti-Federalist Papers — the other side', description: 'What the Constitution\'s opponents feared, and whether they were right' }
     ]
   },
   {

@@ -773,7 +773,7 @@ function loadDailyContent() {
 
   const icons = ['§', '❧', '⚖', '❖', '•'];
   document.getElementById('deeper-body').innerHTML = currentEntry.digDeeper.map((item, i) => `
-    <div class="deeper-item">
+    <div class="deeper-item"${item.key ? ` onclick="showDeepDetail('${item.key}')"` : ''}>
       <div class="deeper-icon" style="font-size:13px; color:#4A5568;">${icons[i]}</div>
       <div>
         <div class="deeper-item-title sans">${item.title}</div>
