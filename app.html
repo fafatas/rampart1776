@@ -709,7 +709,13 @@ const deepDetails = {
 
 let deepReturnPage = 'daily';
 
+function showDeeperItem(i) {
+  const item = currentEntry && currentEntry.digDeeper[i];
+  if (item && item.key) showDeepDetail(item.key);
+}
+
 function showDeepDetail(key) {
+  console.log('showDeepDetail called:', key);
   const d = deepDetails[key];
   if (!d) return;
   deepReturnPage = document.querySelector('.page.active').id.replace('page-', '');
@@ -773,7 +779,7 @@ function loadDailyContent() {
 
   const icons = ['§', '❧', '⚖', '❖', '•'];
   document.getElementById('deeper-body').innerHTML = currentEntry.digDeeper.map((item, i) => `
-    <div class="deeper-item"${item.key ? ` onclick="showDeepDetail('${item.key}')"` : ''}>
+    <div class="deeper-item" onclick="showDeeperItem(${i})">
       <div class="deeper-icon" style="font-size:13px; color:#4A5568;">${icons[i]}</div>
       <div>
         <div class="deeper-item-title sans">${item.title}</div>
